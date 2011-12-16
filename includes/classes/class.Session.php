@@ -34,13 +34,11 @@
  *
  * - Access Control Functions
  * isAdministrator()
- * isConsumer()
- * isVendor()
- * isPublisher()
+ * isUser()
+ * isManager()
  * isUserAdministrator(username)
- * isUserConsumer(username)
- * isUserVendor(username)
- * isUserPublisher(username)
+ * isUserUser(username)
+ * isUserManager(username)
  * //////////////////////////
  * //////////////////////////
  * //////////////////////////
@@ -115,12 +113,12 @@ class Session
     }//}}}3
 
     /**
-     *Returns 1 if current User is an Consumer.
+     *Returns 1 if current User is an User.
      *	else 0;
      *
      *@author Jacob Hadden, <jhadden@islander.tamucc.edu>
      */
-    public function isConsumer()
+    public function isUser()
     {//{{{3
       //Retrieves USERID
       $userID = $this->user->getUserID();
@@ -137,17 +135,17 @@ class Session
       //Retrieve the Row from the Query
       $row = mysql_fetch_array($result);
 
-      //Returns the value of the "consumer" for UserID
-      return $row["consumer"];
+      //Returns the value of the "user" for UserID
+      return $row['user'];
     }//}}}3
 
     /**
-     *Returns 1 if current User is an Vendor.
+     *Returns 1 if current User is an Manager.
      *	else 0;
      *
      *@author Jacob Hadden, <jhadden@islander.tamucc.edu>
      */
-    public function isVendor()
+    public function isManager()
     {//{{{3
       //Retrieves USERID
       $userID = $this->user->getUserID();
@@ -164,35 +162,8 @@ class Session
       //Retrieve the Row from the Query
       $row = mysql_fetch_array($result);
 
-      //Returns the value of the "vendor" for UserID
-      return $row['vendor'];
-    }//}}}3
-
-    /**
-     *Returns 1 if current User is an Publisher.
-     *	else 0;
-     *
-     *@author Jacob Hadden, <jhadden@islander.tamucc.edu>
-     */
-    public function isPublisher()
-    {//{{{3
-      //Retrieves USERID
-      $userID = $this->user->getUserID();
-
-      //Searches Role DB for a userID match
-      $sql = sprintf("SELECT * FROM role where userid = %d",
-		  mysql_real_escape_string($userID));
-
-      //Queries DB
-      $result = $this->db->query($sql);
-      if ($result === FALSE)
-            die("Could not query database");
-
-      //Retrieve the Row from the Query
-      $row = mysql_fetch_array($result);
-
-      //Returns the value of the "publisher" for UserID
-      return $row['publisher'];
+      //Returns the value of the "manager" for UserID
+      return $row['manager'];
     }//}}}3
 
     /**
@@ -225,12 +196,12 @@ class Session
     }//}}}3
 
     /**
-     *Returns 1 if current User is an Consumer
+     *Returns 1 if current User is an User.
      *	else 0;
      *
      *@author Jacob Hadden, <jhadden@islander.tamucc.edu>
      */
-    public function isUserConsumer($_userName)
+    public function isUserUser($_userName)
     {//{{{3
       //get an user information
       $uobj = new User($this->db, $this->settings, $this->common);
@@ -249,18 +220,17 @@ class Session
       //Retrieve the Row from the Query
       $row = mysql_fetch_array($result);
 
-
-      //Returns the value of the "consumer" for UserID
-      return $row['consumer'];
+      //Returns the value of the "user" for UserID
+      return $row['user'];
     }//}}}3
 
     /**
-     *Returns 1 if current User is an Vendor.
+     *Returns 1 if current User is an Manager.
      *	else 0;
      *
      *@author Jacob Hadden, <jhadden@islander.tamucc.edu>
      */
-    public function isUserVendor($_userName)
+    public function isUserManager($_userName)
     {//{{{3
       //get an user information
       $uobj = new User($this->db, $this->settings, $this->common);
@@ -279,37 +249,8 @@ class Session
       //Retrieve the Row from the Query
       $row = mysql_fetch_array($result);
 
-      //Returns the value of the "vendor" for UserID
-      return $row['vendor'];
-    }//}}}3
-
-    /**
-     *Returns 1 if current User is an Publisher.
-     *	else 0;
-     *
-     *@author Jacob Hadden, <jhadden@islander.tamucc.edu>
-     */
-    public function isUserPublisher($_userName)
-    {//{{{3
-      //get an user information
-      $uobj = new User($this->db, $this->settings, $this->common);
-      $uobj->loadUserByUserName(mysql_real_escape_string($_userName)); //load the user
-      $userID = $uobj->getUserID(); //get the id
-
-      //Searches Role DB for a userID match
-      $sql = sprintf("SELECT * FROM role where userid = %d",
-		  mysql_real_escape_string($userID));
-
-      //Queries DB
-      $result = $this->db->query($sql);
-      if ($result === FALSE)
-            die("Could not query database");
-
-      //Retrieve the Row from the Query
-      $row = mysql_fetch_array($result);
-
-      //Returns the value of the "publisher" for UserID
-      return $row['publisher'];
+      //Returns the value of the "manager" for UserID
+      return $row['manager'];
 
     }//}}}3
 
@@ -445,6 +386,7 @@ class Session
     private function createSession($username, $time, $remember=false)
     {//{{{3
         $token = $this->common->generateToken();
+        $filePath = $this->settings->getLogPath();
 
         //get an user information
         $uobj = new User($this->db, $this->settings, $this->common);
@@ -462,9 +404,8 @@ class Session
             die("Insertion of session failed");
 
 
-            $message = $username . " created session1 " . date("F j, Y,g:i a");
-            $filePath = "/home/carlic578/capstone/www/textFiles/sessionLog.txt"; 
-            $this->common->appendToFile($filePath,$message);
+        $message = $username . " created session " . date("F j, Y @ g:i a") . " using createSession()";
+        $this->common->appendToFile($filePath,$message);
 
         if($remember)
             setcookie("token", $token, time()+14*24*60*60);
@@ -492,11 +433,33 @@ class Session
         while($row = mysql_fetch_array($result))
         {
             $object = new Session($this->db, $this->settings, $this->common);
-            $object->getSessionByUser($row['userName']);
+            $object->getSessionByToken($row['token']);
             array_push($stack, $object);
         }
 
         return $stack;
+    }//}}}3
+
+    /**
+     * Makes the object have everything it needs
+     *
+     * @author Bradley Friemel,<bfriemel@islander.tamucc.edu>
+     */
+    public function getSessionByToken($token)
+    { //{{{3
+        $sql = sprintf("SELECT * FROM session WHERE token ='%s'",
+                mysql_real_escape_string($token));
+        $result = $this->db->query($sql);
+        if($result === FALSE)
+            die("Could not query database");
+
+        $row = mysql_fetch_array($result);
+
+        $this->sessionKey = $token;
+        $this->username = $row['userName'];
+        $this->ip= $row['ipAddress'];
+        $this->dateCreated = $row['dateCreated'];
+        $this->lastSeen = $row['lastSeen'];
     }//}}}3
 
     /**
@@ -535,7 +498,7 @@ class Session
 
     //get session key By: Bradley Friemel,<bfriemel@islander.tamucc.edu>
     public function getSessionKey()
-    { return $this->SessionKey;}
+    { return $this->sessionKey;}
 
     //get date created By: Bradley Friemel,<bfriemel@islander.tamucc.edu>
     public function getDateCreated()
@@ -548,18 +511,17 @@ class Session
     //get user name by token By: Bradley Friemel,<bfriemel@islander.tamucc.edu>
     //@modifiedBy Christopher Carlisle, <ccarlisle1@islander.tamucc.edu>
     //@modified 11/06/10
-    public function getUserNameByToken($TokenIn)
+    public function getUserNameByToken($session)
     {//{{{3
-        $returnName = "";
-        $sql = sprintf("SELECT * FROM session WHERE token = '%s'",
-                mysql_real_escape_string($TokenIn));
+        $sql = sprintf("SELECT * FROM session WHERE token = '%s'", mysql_real_escape_string($session));
+
         $result = $this->db->query($sql);
         if($result === FALSE)
             die("Could not query database");
-        while($row = mysql_fetch_array($result))
-        {
-            $returnName = $row["userName"];
-        }
+
+        $row = mysql_fetch_array($result);
+        $returnName = $row["userName"];
+
         return $returnName;
     }//}}}3
 
@@ -631,7 +593,7 @@ class Session
         if (mysql_num_rows($result) == 1)
         { $returnValue = true; }
         while($row = mysql_fetch_array($result))
-        { logoutUser($row['userName']); }
+        { $this->logoutSession($row['token']); }
 
     }//}}}3
 
@@ -644,14 +606,32 @@ class Session
     public function logoutUser($user)
     {//{{{3
         $sql = sprintf("DELETE FROM session WHERE userName='%s'", mysql_real_escape_string($user));
+        $filePath = $this->settings->getLogPath();
+
 
         // execute query
         $result = $this->db->query($sql);
 
-        $message = $this->username . " removed session " . date("F j, Y,g:i a");
-        $filePath = "/home/carlic578/capstone/www/textFiles/sessionLog.txt";
+        $message = $this->username . " removed session for " . $user . " on " . date("F j, Y @ g:i a") . " using logoutUser()";
         $this->common->appendToFile($filePath,$message);
         return $result;
+    }//}}}3
+
+    public function logoutSession($session)
+    {//{{{3
+
+        $user = $this->getUserNameByToken($session);
+
+
+        $sql = sprintf("DELETE FROM session WHERE token='%s'", mysql_real_escape_string($session));
+        $filePath = $this->settings->getLogPath();
+
+        $result = $this->db->query($sql);
+
+        $message = $this->username . " removed session for " . $user . " on " . date("F j, Y @ g:i a") . " using logoutSession()";
+        $this->common->appendToFile($filePath,$message);
+        return $result;
+
     }//}}}3
 
     /**
@@ -666,21 +646,22 @@ class Session
         if(isset($_SESSION['token']))
         {
             $sql = sprintf("DELETE FROM session WHERE token='%s'", mysql_real_escape_string($_SESSION["token"]));
+            $filePath = $this->settings->getLogPath();
 
             // execute query
             $result = $this->db->query($sql);
-            $message = $this->username . " removed session " . date("F j, Y,g:i a");
-            $filePath = "/home/carlic578/capstone/www/textFiles/sessionLog.txt";
+            $message = $this->username . " removed session " . date("F j, Y @ g:i a") . " using deleteSession()";
             $this->common->appendToFile($filePath,$message);
         }
-        elseif(isset($_COOKIE['token']))
+        else
+            $result = FALSE;
+
+        if(isset($_COOKIE['token']))
         {
             $sql = sprintf("DELETE FROM session WHERE token='%s'", mysql_real_escape_string($_COOKIE["token"]));
 
             $result = $this->db->query($sql);
         }
-        else
-            $result = FALSE;
 
         // delete cookies, if any
         setcookie("token", "", time() - 3600);

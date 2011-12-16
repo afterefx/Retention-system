@@ -89,7 +89,7 @@ class UserRegistration
      * @param  token
      * @return mixed
      */
-    public function addUser($time, $email, $username, $password, $fname, $lname, $zip,$role)
+    public function addUser($time, $email, $username, $password, $fname, $lname, $role)
     {
         //create a token for this registration
         $token = $this->createToken($username);
@@ -98,14 +98,13 @@ class UserRegistration
 
         //insert into table
         $sql=sprintf("INSERT INTO userRegistration
-                (token,username,role,fName,lName,zipCode,password,email) VALUES
-                ('%s','%s','%s','%s','%s',%d,'%s','%s')",
+                (token,username,role,fName,lName,password,email) VALUES
+                ('%s','%s','%s','%s','%s','%s','%s')",
                 mysql_real_escape_string($token),
                 mysql_real_escape_string($username),
                 mysql_real_escape_string($role),
                 mysql_real_escape_string($fname),
                 mysql_real_escape_string($lname),
-                mysql_real_escape_string($zip),
                 mysql_real_escape_string($password),
                 mysql_real_escape_string($email));
 
@@ -113,29 +112,7 @@ class UserRegistration
         if($result === FALSE)
             die("Could not insert user into database");
 
-        if($result && $role == "consumer")//upon successful completion email the user with activation link
-        {
-            $to = $email;
-            $subject = "[Mubo] Welcome to MuBo!";
-            $body =<<<HEREDOC
-                <html><head><title>Welcome to Mubo</title></head>
-                <body>
-                We are glad that you have showed interest in
-                our site. There is one more step for your account to be
-                activated. All we need you to do is click the link below<br /><br />
-                <a href="http://mubo.afterpeanuts.com/confirm.php?tok=$token">
-                http://mubo.afterpeanuts.com/confirm.php?tok=$token </a><br />
-                <br />
-                Thanks and we hope to hear from you soon!<br />
-                <br />
-                <font size="xx-small">This is under development is for test purposes only</font>
-                </body>
-                </html>
-HEREDOC;
-            $obj->sendEmail($to, $subject, $body);
-            return true;
-        }
-        elseif($result)
+        if($result)
             return true;
         else
             return false;
@@ -178,47 +155,36 @@ HEREDOC;
            $userName = $row['username'];
            $fName = $row['fName'];
            $lName = $row['lName'];
-           $zipCode = $row['zipCode'];
            $password = $row['password'];
            $email = $row['email'];
            $role = $row['role'];
-           $consumer = 0;
-           $vendor = 0;
-           $publisher = 0;
+           $user = 0;
+           $manager = 0;
            $admin = 0;
            switch($role)
            {
-             case "consumer":
-                   $consumer = 1;
-                   $vendor = 0;
-                   $publisher = 0;
+             case "user":
+                   $user = 1;
+                   $manager = 0;
                    $admin = 0;
                    break;
-             case "vendor":
-                   $consumer = 0;
-                   $vendor = 1;
-                   $publisher = 0;
-                   $admin = 0;
-                   break;
-              case "publisher":
-                   $consumer = 0;
-                   $vendor = 0;
-                   $publisher = 1;
+              case "manager":
+                   $user = 0;
+                   $manager = 1;
                    $admin = 0;
                    break;
               case "administrator":
-                   $consumer = 0;
-                   $vendor = 0;
-                   $publisher = 0;
+                   $user = 0;
+                   $manager = 0;
                    $admin = 1;
                    break;
 
            }
 
            $sql = sprintf("INSERT INTO users
-                   (userid,username,password,fname,lname,email,createdOn,modified,modifiedBy,birthDate,zip,enabled,questionID,secretAnswer,lastLogIn) VALUES
-                   (%d,'%s','%s','%s','%s','%s',%d,%u,'%s',%d,%d,%u,%d,'%s',%d)",
-                  $userID, $userName,$password,$fName,$lName,$email,time(),1," ",1,$zipCode,1,1," ",1);
+                   (userid,username,password,fname,lname,email,createdOn,modified,modifiedBy,birthDate,enabled,questionID,secretAnswer,lastLogIn) VALUES
+                   (%d,'%s','%s','%s','%s','%s',%d,%u,'%s',%d,%d,%u,'%s',%d)",
+                  $userID, $userName,$password,$fName,$lName,$email,time(),1," ",1,1,1," ",1);
 
            $result = $this -> db ->query($sql);
 
@@ -228,8 +194,8 @@ HEREDOC;
                die("Insertion of user failed1");
            }
 
-           $sql = sprintf("INSERT INTO role VALUES (%d,%u,%u,%u,%u)",
-               $userID,$consumer,$vendor,$publisher,$admin);
+           $sql = sprintf("INSERT INTO role VALUES (%d,%u,%u,%u)",
+               $userID,$user,$manager,$admin);
 
            $result = $this->db->query($sql);
 
@@ -275,14 +241,11 @@ HEREDOC;
     {
         switch($userType)
         {
-            case "Vendor":
-                $sql = "SELECT username from userRegistration WHERE role = 'vendor'";
+            case "User":
+                $sql = "SELECT username from userRegistration WHERE role = 'user'";
                 break;
-            case "Publisher":
-                $sql = "SELECT username from userRegistration where role = 'publisher'";
-                break;
-           case "Consumer":
-                $sql = "SELECT username from userRegistration WHERE role = 'consumer'";
+            case "Manager":
+                $sql = "SELECT username from userRegistration where role = 'manager'";
                 break;
            case "Administrator":
                 $sql = "SELECT username FROM userRegistration WHERE role = 'administrator'";
@@ -318,14 +281,11 @@ HEREDOC;
     {
         switch($userType)
         {
-            case "Vendor":
-                $sql = "SELECT username from userRegistration WHERE role = 'vendor'";
+            case "User":
+                $sql = "SELECT username from userRegistration WHERE role = 'user'";
                 break;
-            case "Publisher":
-                $sql = "SELECT username from userRegistration where role = 'publisher'";
-                break;
-           case "Consumer":
-                $sql = "SELECT username from userRegistration WHERE role = 'consumer'";
+            case "Manager":
+                $sql = "SELECT username from userRegistration where role = 'manager'";
                 break;
            case "Administrator":
                 $sql = "SELECT username FROM userRegistration WHERE role = 'administrator'";
@@ -340,14 +300,12 @@ HEREDOC;
         if($result == FALSE)
             die("Could not query database");
 
-        $stack = array();
         while($row = mysql_fetch_array($result))
         {
             $value = $row['username'];
 
             $this->approveUser($value);
         }
-        return $stack;
     }
 
    /**
@@ -361,19 +319,16 @@ HEREDOC;
     {//{{{2
         switch($userType)
         {
-            case "Vendor":
-                $sql = "SELECT username from userRegistration WHERE role = 'vendor'";
+            case "User":
+                $sql = "SELECT username from userRegistration WHERE role = 'user'";
                 break;
-            case "Publisher":
-                $sql = "SELECT username from userRegistration where role = 'publisher'";
+            case "Manager":
+                $sql = "SELECT username from userRegistration where role = 'manager'";
                 break;
-           case "Consumer":
-                $sql = "SELECT username from userRegistration WHERE role = 'consumer'";
-                break;
-           case "Administrator":
+            case "Administrator":
                 $sql = "SELECT username FROM userRegistration WHERE role = 'administrator'";
                 break;
-                default:
+            default:
                 $sql = "SELECT username FROM userRegistration";
                 break;
         }

@@ -27,7 +27,14 @@ if (0 > version_compare(PHP_VERSION, '5')) {
 class Settings
 {
     // --- OPERATIONS ---
+    private $strings;
+    private $stringLocation;
 
+    public function __construct()
+    {
+        $this->stringLocation = "/home/lilly/repos/www/includes/muboStrings.xml";
+        $this->strings = new Strings($this->stringLocation);
+    }
     /**
      * Returns the url for the database
      *
@@ -35,10 +42,7 @@ class Settings
      * @return sends the url for the database back
      */
     public function getDbUrl()
-    {
-      $dbUrlString = new Strings("includes/muboStrings.xml");
-      return $dbUrlString->getStringByName("dburl");
-    }
+    { return $this->strings->getStringByName("dburl"); }
     /**
      * Returns the url for the database
      *
@@ -46,10 +50,7 @@ class Settings
      * @return sends the username for the database back
      */
     public function getDbUsername()
-    {
-      $dbUsernameString = new Strings("includes/muboStrings.xml");
-      return $dbUsernameString->getStringByName("dbusername");
-    }
+    { return $this->strings->getStringByName("dbusername"); }
 
     /**
      * Returns the password for the database
@@ -58,10 +59,7 @@ class Settings
      * @return sends the password for the database back
      */
     public function getDbPassword()
-    {
-      $dbPasswordString = new Strings("includes/muboStrings.xml");
-      return $dbPasswordString->getStringByName("dbpassword");
-    }
+    { return $this->strings->getStringByName("dbpassword"); }
 
     /**
      * Returns the database for the database
@@ -70,11 +68,16 @@ class Settings
      * @return sends the database for the database back
      */
     public function getDatabase()
-    {
-      $databaseString = new Strings("includes/muboStrings.xml");
-      return $databaseString->getStringByName("database");
-    }
+    { return $this->strings->getStringByName("database"); }
 
+    /**
+     * Returns the database for the database
+     *
+     * @author Christopher Carlisle, <ccarlisle1@islander.tamucc.edu>
+     * @return sends the database for the database back
+     */
+    public function getLogPath()
+    { return $this->strings->getStringByName("logPath"); }
 
     /**
      * Returns the database for the database
@@ -83,11 +86,7 @@ class Settings
      * @return sends the database for the database back
      */
     public function getTitle()
-    {
-      $titleString = new Strings("includes/muboStrings.xml");
-      return $titleString->getStringByName("Title");
-    }
-
+    { return $this->strings->getStringByName("Title"); }
 
     /**
      * Returns the database for the database
@@ -96,11 +95,7 @@ class Settings
      * @return sends the database for the database back
      */
     public function getSiteTitle()
-    {
-      $siteTitleString = new Strings("includes/muboStrings.xml");
-      return $siteTitleString->getStringByName("Site Title");
-    }
-
+    { return $this->strings->getStringByName("Site Title"); }
 
     /**
      * Returns the database for the database
@@ -109,10 +104,10 @@ class Settings
      * @return sends the database for the database back
      */
     public function getSlogan()
-    {
-      $getSloganString = new Strings("includes/muboStrings.xml");
-      return $getSloganString->getStringByName("Slogan");
-    }
+    { return $this->strings->getStringByName("Slogan"); }
+
+    public function getStringsLocation()
+    { return $this->stringLocation; }
 
 } /* end of class Settings */
 

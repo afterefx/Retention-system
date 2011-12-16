@@ -50,8 +50,6 @@ class Strings
     //class should be relative to the www folder
 	public function __construct($_XMLFile)
 	{
-		//load here
-		//$this->muboXML = "/home/carlic578/capstone/www/";
 		$this->muboXML = $_XMLFile;
 
 		if(!$muboXML=simplexml_load_file($this->muboXML))
@@ -77,7 +75,7 @@ class Strings
         $_stringKey = $this->stringErrorChecking($_stringKey, "key");
         $_stringValue = $this->stringErrorChecking($_stringValue, "value");
 
-        $xml = simplexml_load_file("includes/muboStrings.xml");
+        $xml = simplexml_load_file($this->muboXML);
 
         $newXML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?> \n<muboString>\n";
 
@@ -92,7 +90,7 @@ class Strings
 
         //Write to File
         $aXML = new SimpleXMLElement($newXML);
-        $aXML->asXML("includes/muboStrings.xml");
+        $aXML->asXML($this->muboXML);
 
         return 1;
     }
@@ -107,7 +105,6 @@ class Strings
      */
     public function editString($_stringKey, $_stringValue)
     {
-
         //check if Key exists
         if(!$this->stringErrorChecking($_stringKey, "exists"))
         { return "This String does not exists"; }
@@ -119,7 +116,7 @@ class Strings
         $_stringKey = $this->stringErrorChecking($_stringKey, "key");
         $_stringValue = $this->stringErrorChecking($_stringValue, "value");
 
-        $xml = simplexml_load_file("includes/muboStrings.xml");
+        $xml = simplexml_load_file($this->muboXML);
 
         $newXML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?> \n<muboString>\n";
 
@@ -137,7 +134,7 @@ class Strings
 
         //Write to File
         $aXML = new SimpleXMLElement($newXML);
-        $aXML->asXML("includes/muboStrings.xml");
+        $aXML->asXML($this->muboXML);
 
         return "String Edited";
 
@@ -157,7 +154,7 @@ class Strings
 
         $_stringKey = $this->stringErrorChecking($_stringKey, "key");
 
-        $xml = simplexml_load_file("includes/muboStrings.xml");
+        $xml = simplexml_load_file($this->muboXML);
 
         foreach($xml->children() as $string)
         {
@@ -174,7 +171,7 @@ class Strings
      */
     public function getXMLCount()
     {
-        $xml = simplexml_load_file("includes/muboStrings.xml");
+        $xml = simplexml_load_file($this->muboXML);
 
         $myXMLCount = 0;
 
@@ -193,7 +190,7 @@ class Strings
      */
     public function getXML()
     {
-        $xml = simplexml_load_file("includes/muboStrings.xml");
+        $xml = simplexml_load_file($this->muboXML);
 
         $myXMLString = "<br />" . $xml->getName() . " XML file:<br />";
         $n = 0;
@@ -232,7 +229,7 @@ class Strings
         if($this->stringErrorChecking($_stringKey, "primary"))
         { return "The Key is a Primary key and cannot be deleted."; }
 
-        $xml = simplexml_load_file("includes/muboStrings.xml");
+        $xml = simplexml_load_file($this->muboXML);
 
         $newXML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?> \n<muboString>\n";
 
@@ -248,7 +245,7 @@ class Strings
 
         //Write to File
         $aXML = new SimpleXMLElement($newXML);
-        $aXML->asXML("includes/muboStrings.xml");
+        $aXML->asXML($this->muboXML);
 
         return "String Removed";
     }
@@ -274,7 +271,7 @@ class Strings
      */
     public function stringErrorChecking($_string, $_method)
     {
-        $xml = simplexml_load_file("includes/muboStrings.xml");
+        $xml = simplexml_load_file($this->muboXML);
 
         switch($_method)
         {

@@ -23,7 +23,7 @@ if($Mubo->session->isAdministrator() != 1)
     $Mubo->common->redirect("index.php");
 
 //figures out if the page to display is set to user
-if(isset($_GET['page']) && $_GET['page']=="user")
+if(isset($_GET['page']) && $_GET['page']=="approveuser")
 {//{{{2
     if(isset($_GET['option']))
     {//{{{3
@@ -35,14 +35,11 @@ if(isset($_GET['page']) && $_GET['page']=="user")
             {
                 switch($username)
                 {
-                    case "Vendor":
-                        $Mubo->userRegistration->approveAllUserType("Vendor");
+                    case "User":
+                        $Mubo->userRegistration->approveAllUserType("User");
                         break;
-                    case "Publisher":
-                        $Mubo->userRegistration->approveAllUserType("Publisher");
-                        break;
-                    case "Consumer":
-                        $Mubo->userRegistration->approveAllUserType("Consumer");
+                    case "Manager":
+                        $Mubo->userRegistration->approveAllUserType("Manager");
                         break;
                     case "Administrator":
                         $Mubo->userRegistration->approveAllUserType("Administrator");
@@ -52,7 +49,6 @@ if(isset($_GET['page']) && $_GET['page']=="user")
                         break;
                     default:
                         $email =  $Mubo->userRegistration->approveUser($username);
-                        $Mubo->common->sendEmail($email,'User has been approved','Thank you for choosing Mubo your user has been approved');
                         break;
                 }
            }
@@ -60,14 +56,11 @@ if(isset($_GET['page']) && $_GET['page']=="user")
             {
                  switch($username)
                 {
-                    case "Vendor":
-                        $Mubo->userRegistration->denyAllUserType("Vendor");
+                    case "User":
+                        $Mubo->userRegistration->denyAllUserType("User");
                         break;
-                    case "Publisher":
-                        $Mubo->userRegistration->denyAllUserType("Publisher");
-                        break;
-                    case "Consumer":
-                        $Mubo->userRegistration->denyAllUserType("Consumer");
+                    case "Manager":
+                        $Mubo->userRegistration->denyAllUserType("Manager");
                         break;
                     case "Administrator":
                         $Mubo->userRegistration->denyAllUserType("Administrator");
@@ -116,9 +109,8 @@ JAVASCRIPT;
         <form>
             <select name="users" id="users" onchange="showUser(this.value)">
                 <option value="">Select a user type:</option>
-                <option value="Vendor">Vendors</option>
-                <option value="Publisher">Publisher</option>
-                <option value="Consumer">Consumer</option>
+                <option value="User">Users</option>
+                <option value="Manager">Manager</option>
                 <option value="Administrator">Administrators</option>
                 <option value="All">All</option>
             </select>
@@ -128,53 +120,46 @@ JAVASCRIPT;
 HTML;
 }//}}}2
 
-//figures out if the page is set to display the session killer
-elseif(isset($_GET['page']) && $_GET['page']=="session")
-{//{{{2
-    $server = $_SERVER["PHP_SELF"];
-    if(isset($_GET['username']))
-        $Mubo->session->logoutUser($_GET['username']);
-    $TableData = $Mubo->session->getAllActiveSessions();
-    $page = <<<HTML
-        <table id = 'adminTable'>
-            <tr>
-                <th> User Name </th>
-                <th> Ip Address </th>
-                <th> Date Created </th>
-                <th> Last Seen </th>
-                <th> Option </th>
-            </tr>
-HTML;
-    foreach($TableData as $dRow)
-    {
-        $UserName = $dRow->getUserName();
-        $IpAddress = $dRow->getIpAddress();
-        $DateCreated = date('n/w/y  g:i:s T',$dRow->getDateCreated());
-        $LastSeen = date('n/w/y g:i:s T',$dRow->getLastSeen());
-        $page .=<<<HTML
-            <tr>
-                <td> $UserName </td>
-                <td> $IpAddress </td>
-                <td> $DateCreated </td>
-                <td> $LastSeen </td>
-                <td> <a href ="admin.php?page=session&username=$UserName">Logout user</a> </td>
-            </tr>
-HTML;
-    }
-    $page.= "</table>";
-}//}}}2
-
 //figures out if the page is set to display the default page
+elseif(isset($_POST['action']) && $_POST['action']=="Edit")
+{
+    //get new user object here
+    editUser();
+}
 else
 {//{{{2
-    $page = "Welcome Admin \n";
+    $page = "Welcome Admin <br />";
+    $page .= displaySessions($Mubo);
+    $server = $_SERVER['PHP_SELF'];
     $page .= <<<HTML
         <table>
             <tr>
-              <td> <a href="admin.php?page=session">Log User Out</a> </td>
+            <th>Manage Users</th>
+            </tr>
+            <tr>
+              <td>
+              <form action="$server" method="post">
+                  <select>
+                      <option>---</option>
+HTML;
+
+    $usernameStack = $Mubo->session->user->getAllUserNames();
+    foreach($usernameStack as $anUser)
+    {
+        $page .=<<<HTML
+            <option value="$anUser">$anUser</option>
+HTML;
+    }
+$page .= <<<HTML
+                  </select>
+              </td>
+              <td>
+                  <input type="button" name="action" value="Edit" /><input type="button" name="action" value="Delete" />
+                </form>
+              </td>
            </tr>
             <tr>
-              <td> <a href="admin.php?page=user">Approve User</a> </td>
+              <td> <a href="admin.php?page=approveuser">Approve Users</a> </td>
            </tr>
            <tr>
            <td><a href="settings.php">Settings</a></td>
@@ -183,9 +168,46 @@ else
 HTML;
 }//}}}2
 
-$Mubo->page->displayPage($page,"Admin");
+$Mubo->page->displayPage($page,"Administration");
 
 
+function displaySessions($Mubo)
+{//{{{1
+
+    $server = $_SERVER["PHP_SELF"];
+    if(isset($_GET['session']))
+        $Mubo->session->logoutSession($_GET['session']);
+    $TableData = $Mubo->session->getAllActiveSessions();
+    $page = <<<HTML
+        <table id = 'adminTable'>
+            <tr>
+                <th> User Name </th>
+                <th> IP Address </th>
+                <th> Date Created </th>
+                <th> Last Seen </th>
+                <th> </th>
+            </tr>
+HTML;
+    foreach($TableData as $dRow)
+    {
+        $UserName = $dRow->getUserName();
+        $IpAddress = $dRow->getIpAddress();
+        $DateCreated = date('n/d/y  g:i:s T',$dRow->getDateCreated());
+        $LastSeen = date('n/d/y g:i:s T',$dRow->getLastSeen());
+        $Token = $dRow->getSessionKey();
+        $page .=<<<HTML
+            <tr>
+                <td> $UserName </td>
+                <td> $IpAddress </td>
+                <td> $DateCreated </td>
+                <td> $LastSeen </td>
+                <td> <a href ="admin.php?page=session&username=$UserName&session=$Token">Logout user</a> </td>
+            </tr>
+HTML;
+    }
+    $page.= "</table>";
+    return $page;
+}//}}}1
 ///=============================================
 
 

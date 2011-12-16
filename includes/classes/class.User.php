@@ -44,7 +44,6 @@ class User
     private $lastModified; //the time the user was last modified
     private $modifiedBy; //username of user that modified the current user
     private $roleID; //roleID of the user that is logged in
-    private $zipcode; //zip code for the current user
     private $birthdate; //birthday for the current user
 
     // --- OPERATIONS ---//{{{1
@@ -150,15 +149,6 @@ class User
     public function getRoleID()
     { return $this->roleID ; }
 
-    /**
-     * Returns the zipcode of the user
-     *
-     * @author Christopher Carlisle, <ccarlisle1@islander.tamucc.edu>
-     * @return zipcode
-     */
-    public function getZipcode()
-    { return $this->zipcode ; }
-
     //}}}3  end getters ======
 
     //{{{3 setters
@@ -233,15 +223,6 @@ class User
      */
     public function setRoleID($_roleID)
     { $this->roleID = $_roleID ; }
-
-    /**
-     * Sets the zipcode for the user
-     *
-     * @author Christopher Carlisle, <ccarlisle1@islander.tamucc.edu>
-     * @params zipcode
-     */
-    public function setZipcode($_zipcode)
-    { $this->zipcode = $_zipcode ; }
 
     /**
      * Sets the birthdate for the user
@@ -336,6 +317,28 @@ class User
             return false;
     }
     //-- end operations -- }}}1
+
+    public function getAllUserNames()
+    {
+        $sql = sprintf("SELECT * FROM users");
+
+        $result = $this->db->query($sql);
+        if($result === FALSE)
+            die("Could not query the database");
+
+        $stack = array();
+        while($row = mysql_fetch_array($result))
+        {
+            $value = $row['username'];
+
+            array_push($stack,$value);
+        }
+        return $stack;
+    }
+
+
+
+
 
 } /* end of class User */
 

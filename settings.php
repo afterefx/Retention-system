@@ -64,8 +64,8 @@ for ($i = 0; $i < $count; $i++)
   $page .= <<<HTML
     <tr>
         <td id="radio"> <input type="radio" name="key" value="$key"/> </td>
-        <td> $key </td>
-        <td> $pString </td>
+        <td> &nbsp;$key </td>
+        <td> &nbsp;$pString </td>
     </tr>
 HTML;
   }
@@ -74,8 +74,8 @@ HTML;
   $page .= <<<HTML
     <tr>
         <td id="radio"> <input type="radio" name="key" value="$key"/> </td>
-        <td> $key </td>
-        <td> $value </td>
+        <td> &nbsp;$key </td>
+        <td> &nbsp;$value </td>
     </tr>
 HTML;
   }

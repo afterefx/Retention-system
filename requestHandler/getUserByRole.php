@@ -14,7 +14,7 @@
 
 require_once '../includes/backend.php';
 $p = $_POST["q"];
-//$p = "Vendor";
+//$p = "User";
 $stack = $Mubo->userRegistration->getUsersByType($p);
 
 echo "<table id =\"adminTable\">
@@ -28,9 +28,9 @@ echo "<table id =\"adminTable\">
   echo "<tr>";
   echo "<td>" . "</td>";
  // echo "<td>" . $p . "</td>";
-  echo "<td>" ."<a href='admin.php?page=user&option=approve&username=". $p .
+  echo "<td>" ."<a href='admin.php?page=approveuser&option=approve&username=". $p .
   "'>Approve All</a>" . "</td>";
-  echo "<td>" . "<a href='admin.php?page=user&option=deny&username=". $p . "'>Deny
+  echo "<td>" . "<a href='admin.php?page=approveuser&option=deny&username=". $p . "'>Deny
   All</a>" . "</td>";
   echo "</tr>";
 //while($row = mysql_fetch_array($result))
@@ -39,10 +39,10 @@ echo "<table id =\"adminTable\">
   echo "<tr>";
   echo "<td>" . $entry . "</td>";
  // echo "<td>" . $p . "</td>";
-  echo "<td>" ."<a href='admin.php?page=user&option=approve&username=". $entry . "'>Approve</a>" . "</td>";
-  echo "<td>" . "<a href='admin.php?page=user&option=deny&username=". $entry . "'>Deny</a>" . "</td>";
+  echo "<td>" ."<a href='admin.php?page=approveuser&option=approve&username=". $entry . "'>Approve</a>" . "</td>";
+  echo "<td>" . "<a href='admin.php?page=approveuser&option=deny&username=". $entry . "'>Deny</a>" . "</td>";
   echo "</tr>";
   }
 echo "</table>";
 
-?> 
+?>

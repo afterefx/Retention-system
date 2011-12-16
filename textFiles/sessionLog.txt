@@ -1,32 +1,41 @@
 
-guest created session November 30, 2010,10:50 am
-guest created session November 30, 2010,11:04 am
-guest created session November 30, 2010,11:11 am
-guest created session November 30, 2010,11:12 am
-guest created session November 30, 2010,11:13 am
-guest created session November 30, 2010,11:31 am
-chris created session November 30, 2010,12:32 pm
-guest created session November 30, 2010,12:32 pm
-guest removed session November 30, 2010,12:33 pm
-guest removed session November 30, 2010,12:34 pm
-guest created session November 30, 2010,12:34 pm
-guest created session November 30, 2010,12:37 pm
-vendor created session November 30, 2010,12:37 pm
-stefany created session November 30, 2010,7:53 pm
-guest created session December 4, 2010,9:34 am
-guest removed session December 4, 2010,9:34 am
-guest created session December 4, 2010,4:03 pm
-guest removed session December 4, 2010,4:37 pm
-guest created session December 4, 2010,5:02 pm
-guest removed session3 December 5, 2010,3:38 pm
-guest removed session3 December 5, 2010,3:49 pm
-guest removed session3 December 5, 2010,4:21 pm
-guest removed session3 December 5, 2010,4:48 pm
-guest removed session3 December 6, 2010,6:18 pm
-guest removed session3 December 7, 2010,11:19 am
-Bradley removed session3 December 7, 2010,12:59 pm
- removed session2 December 8, 2010,9:52 am
-guest created session1 December 8, 2010,9:52 am
-guest removed session2 December 8, 2010,9:52 am
- removed session2 December 8, 2010,9:54 am
-guest created session1 December 8, 2010,11:06 am
+guest created session March 11, 2011 @ 2:13 pm using createSession()
+guest created session March 24, 2011 @ 1:35 pm using createSession()
+guest created session March 24, 2011 @ 4:19 pm using createSession()
+guest removed session March 24, 2011 @ 4:28 pm using logoutUser()
+guest created session March 24, 2011 @ 4:34 pm using createSession()
+guest removed session March 24, 2011 @ 4:34 pm using logoutUser()
+ removed session March 25, 2011 @ 9:57 am using logoutUser()
+guest created session March 25, 2011 @ 11:03 am using createSession()
+guest removed session March 25, 2011 @ 11:03 am using deleteSession()
+guest created session March 25, 2011 @ 11:09 am using createSession()
+guest removed session March 25, 2011 @ 11:32 am using deleteSession()
+guest created session March 30, 2011 @ 11:05 am using createSession()
+guest removed session March 30, 2011 @ 11:05 am using deleteSession()
+guest created session March 30, 2011 @ 11:14 am using createSession()
+guest created session April 7, 2011 @ 12:51 pm using createSession()
+guest removed session April 7, 2011 @ 12:56 pm using logoutUser()
+guest created session April 7, 2011 @ 1:26 pm using createSession()
+guest created session April 7, 2011 @ 1:27 pm using createSession()
+guest removed session for guest on April 7, 2011 @ 1:28 pm using logoutSession()
+guest created session April 7, 2011 @ 1:47 pm using createSession()
+guest removed session for guest on April 7, 2011 @ 2:15 pm using logoutSession()
+guest created session April 8, 2011 @ 12:30 pm using createSession()
+guest removed session for guest on April 8, 2011 @ 12:36 pm using logoutSession()
+guest removed session for  on April 8, 2011 @ 12:37 pm using logoutSession()
+guest created session April 8, 2011 @ 2:34 pm using createSession()
+guest removed session for guest on April 8, 2011 @ 2:34 pm using logoutSession()
+guest removed session April 8, 2011 @ 2:38 pm using deleteSession()
+guest created session April 8, 2011 @ 2:40 pm using createSession()
+ccarlisle created session April 11, 2011 @ 10:37 am using createSession()
+ccarlisle removed session for guest on April 11, 2011 @ 10:38 am using logoutSession()
+ccarlisle removed session for  on April 11, 2011 @ 10:38 am using logoutSession()
+ccarlisle created session April 11, 2011 @ 11:10 am using createSession()
+ccarlisle removed session for ccarlisle on April 11, 2011 @ 11:10 am using logoutSession()
+ccarlisle created session April 11, 2011 @ 12:39 pm using createSession()
+ccarlisle removed session for ccarlisle on April 11, 2011 @ 12:39 pm using logoutSession()
+ccarlisle removed session April 11, 2011 @ 12:39 pm using deleteSession()
+ccarlisle created session April 11, 2011 @ 12:39 pm using createSession()
+ccarlisle created session April 11, 2011 @ 1:43 pm using createSession()
+ccarlisle removed session for ccarlisle on April 11, 2011 @ 1:43 pm using logoutSession()
+guest created session May 31, 2011 @ 1:47 pm using createSession()

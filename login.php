@@ -1,7 +1,7 @@
 <?php
 
 require_once 'includes/backend.php';
-if($Mubo->session->sessionStart())
+if($Mubo->session->sessionExists())
     $Mubo->common->redirect("index.php");
 
 if(isset($_POST["user"]) && isset($_POST["pass"]))

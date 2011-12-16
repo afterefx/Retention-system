@@ -87,23 +87,6 @@ class Common
     }
 
     /**
-     * Sends an email with a from email address of noreply
-     *
-     * @author Christopher Carlisle, <ccarlisle1@islander.tamucc.edu>
-     * @params to,subject,body
-     * @return boolean value
-     */
-    public function sendEmail($to, $subject, $body)
-    {
-        $headers = "From: noreply@mubo.afterpeanuts.com";
-        $headers .= 'MIME-Version: 1.0' . "\r\n";
-        $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-
-        return mail($to, $subject, $body, $headers);
-    }
-
-
-    /**
      * Takes a file name and a message. The message is written to the file that
      *  was given
      *

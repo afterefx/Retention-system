@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <muboString>
-<key id="Title">Welcome to MuBo</key>
-<key id="Site Title">MuBo</key>
-<key id="Slogan">Get mubo, forget the rest.</key>
+<key id="Title">Stat Report Generator</key>
+<key id="Site Title">Stat Report Generator</key>
+<key id="Slogan">Official Use Only</key>
 <key id="dburl">127.0.0.1</key>
 <key id="dbusername">serveradmin</key>
 <key id="dbpassword">rs52Z;Xf4:JC</key>
 <key id="database">masterList</key>
+<key id="logPath">/home/lilly/repos/www/textFiles/sessionLog.txt</key>
 </muboString>

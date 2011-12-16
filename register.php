@@ -29,8 +29,7 @@ if (isset($_POST["recaptcha_response_field"]) && $_POST["recaptcha_response_fiel
             //check to see that all fields are set
             if(isset($_POST['username']) && isset($_POST['password'])
                 && isset($_POST['firstname']) && isset($_POST['lastname'])
-                && isset($_POST['zipcode']) && isset($_POST['time'])
-                && isset($_POST['email']) )
+                && isset($_POST['time']) && isset($_POST['email']) )
                 {
 
                     $emailAddy = $_POST['email'];//get the email
@@ -40,14 +39,13 @@ if (isset($_POST["recaptcha_response_field"]) && $_POST["recaptcha_response_fiel
                     $result = $obj->addUser($_POST['time'], $_POST['email'],
                                  $_POST['username'], $_POST['password'],
                                  $_POST['firstname'], $_POST['lastname'],
-                                 $_POST['zipcode'],$_POST['role']);
+                                 $_POST['role']);
                     $result = ($result === FALSE) ? "There was an error" : "Success,"; //start creating appropriate result message
 
                     //then append the appropriate message depending on the role
-                    $result .= ($_POST['role'] =="consumer") ? " a confirmation email has been sent to $emailAddy":" you will be notified when your account has been approved by an administrator.";
+                    $result .= " you will be notified when your account has been approved by an administrator.";
                     $Mubo->page->setNotification($result);//put the text into the notification area of the website
-                    $passedUsername= $passedFName= $passedLName= $passedZip=
-                        $passedEmail='';//empty out all of the strings that were passed
+                    $passedUsername= $passedFName= $passedLName= $passedEmail='';//empty out all of the strings that were passed
                 }
         }
         else//set the strings to what was passed incase there was an error and the fields will be filled
@@ -57,25 +55,23 @@ if (isset($_POST["recaptcha_response_field"]) && $_POST["recaptcha_response_fiel
                 $passedUsername=$_POST['username'];
                 $passedFName=$_POST['firstname'];
                 $passedLName=$_POST['lastname'];
-                $passedZip=$_POST['zipcode'];
                 $passedEmail=$_POST['email'];
         }
 }
 //if the user information was passed but the captcha was incorrect it will auto
 //fill the fields again
 elseif(isset($_POST['username']) && isset($_POST['firstname']) && isset($_POST['lastname'])
-                && isset($_POST['zipcode']) && isset($_POST['time'])
+                && isset($_POST['time'])
                 && isset($_POST['email']) )
 {
     $passedUsername=$_POST['username'];
     $passedFName=$_POST['firstname'];
     $passedLName=$_POST['lastname'];
-    $passedZip=$_POST['zipcode'];
     $passedEmail=$_POST['email'];
 }
 else //initialize these variables with empty strings so that we prevent errors
 {
-    $passedUsername= $passedFName= $passedLName= $passedZip= $passedEmail='';
+    $passedUsername= $passedFName= $passedLName= $passedEmail='';
 }
 //end captcha setup }}}1
 
@@ -88,7 +84,6 @@ $header =<<<JAVASCRIPT
     var pass = true;
     var first = true;
     var last = true;
-    var zip = true;
     var email = true;
     var eMatch = true;
 
@@ -217,34 +212,7 @@ $header =<<<JAVASCRIPT
 
     }//}}}2
 
-    //validate that the zipcode falls within the regex
-    function checkZipCode()
-    {//{{{2
-        //regex to test against
-        var regTest = /^[0-9]{5}/;
-        //check to see if the strings are empty
-        if((document.getElementById("zipcode").value=="" || document.getElementById("zipcode").value==null))
-                document.getElementById("validZipcode").innerHTML="";
 
-        //if the regular expression test succeeds show a checkmark
-        else if(regTest.test(document.getElementById("zipcode").value))
-        {
-            document.getElementById("validZipcode").innerHTML="<img src=\"images/check.png\" />";
-            zip=true;
-            enableSubmit();
-        }
-
-        //if the regular expression test does not succeed show an X
-        else
-        {
-            document.getElementById("validZipcode").innerHTML="<img src=\"images/x.png\" /><b>Invalid zipcode</b>";
-            zip=false;
-            disableSubmit();
-        }
-
-    }//}}}2
-
-    //validate that the zipcode falls within the regex
     function checkEmail()
     {//{{{2
         //regex to test against
@@ -301,14 +269,14 @@ $header =<<<JAVASCRIPT
     //enables the submit button
     function enableSubmit()
     {//{{{2
-        if(pass && first && last && zip && email && eMatch)
+        if(pass && first && last && email && eMatch)
             document.getElementById("submitButton").disabled=false;
     }//}}}2
 
     //disables the submit button
     function disableSubmit()
     {//{{{2
-        if(!pass || !first || !last || !zip || !email || !eMatch)
+        if(!pass || !first || !last || !email || !eMatch)
             document.getElementById("submitButton").disabled=true;
     }//}}}2
 
@@ -356,11 +324,6 @@ $page =<<<HTML
             <td><span id="validLast" /></td>
         </tr>
         <tr>
-            <td>Zipcode:</td>
-            <td><input type="text" id="zipcode" name="zipcode" value="$passedZip" onchange="checkZipCode()" /></td>
-            <td><span id="validZipcode" /></td>
-        </tr>
-        <tr>
             <td>Email:</td>
             <td><input type="text" id="email" name="email" value="$passedEmail" onchange="checkEmail()" /></td>
             <td><span id="validEmail" /></td>
@@ -374,11 +337,10 @@ $page =<<<HTML
         </table>
         <br />
         <table id="role">
-        <tr><td>Consumer</td><td>Vendor</td><td>Publisher</td></tr>
+        <tr><td>User</td><td>Manager</td></tr>
         <tr>
-            <td><input type="radio" name="role" value="consumer" /></td>
-            <td><input type="radio" name="role" value="vendor" /></td>
-            <td><input type="radio" name="role" value="publisher" /></td>
+            <td><input type="radio" name="role" value="user" /></td>
+            <td><input type="radio" name="role" value="manager" /></td>
         <input type="hidden" name="time" value="$time" />
     </table>
     $muboCaptcha
